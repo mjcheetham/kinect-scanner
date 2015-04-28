@@ -1,0 +1,126 @@
+﻿<Window
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" mc:Ignorable="d" x:Class="Kapture.MainWindow"
+        xmlns:k="clr-namespace:Kapture"
+        Title="Kapture" Height="350" Width="525" MinHeight="350" MinWidth="525" Icon="Kapture.ico">
+    <Window.CommandBindings>
+        <CommandBinding Command="ApplicationCommands.New"
+                  Executed="NewRecording"
+                  CanExecute="IsSensorConnected"/>
+        <CommandBinding Command="ApplicationCommands.Open"
+                  Executed="OpenRecording"/>
+        <CommandBinding Command="ApplicationCommands.Save"
+                        Executed="SaveSelectedRecording"
+                        CanExecute="CanSaveRecording"/>
+        <CommandBinding Command="ApplicationCommands.Close"
+                        Executed="CloseRecording"
+                        CanExecute="IsRecordingSelected"/>
+
+        <CommandBinding Command="k:KaptureCommands.ProcessRecording"
+                        Executed="ProcessRecording"
+                        CanExecute="CanProcessRecording"/>
+        <CommandBinding Command="k:KaptureCommands.CancelProcessing"
+                        Executed="CancelProcessing"
+                        CanExecute="CanCancelProcessing"/>
+
+        <CommandBinding Command="k:KaptureCommands.Preferences"
+                        Executed="ShowPreferences"/>
+        
+        <CommandBinding Command="k:KaptureCommands.ToggleSensor"
+                        Executed="ToggleSensor"/>
+        <CommandBinding Command="k:KaptureCommands.SensorInformation"
+                        Executed="ShowSensorInformation"
+                        CanExecute="IsSensorConnected"/>
+    </Window.CommandBindings>
+
+    <Grid Background="#FFF0F0F0">
+        <DockPanel LastChildFill="True">
+            <Menu DockPanel.Dock="Top" IsMainMenu="True" Padding="2">
+                <MenuItem Header="_File" Height="20">
+                    <MenuItem Header="E_xit" Command="SystemCommands.CloseWindowCommand"/>
+                </MenuItem>
+
+                <MenuItem Header="_Edit">
+                    <MenuItem Header="_Preferences..." Command="k:KaptureCommands.Preferences"/>
+                </MenuItem>
+                
+                <MenuItem Header="_Recording">
+                    <MenuItem Header="_New..." Command="ApplicationCommands.New"/>
+
+                    <MenuItem Header="_Open..." Command="ApplicationCommands.Open"/>
+
+                    <MenuItem Header="_Process" Command="k:KaptureCommands.ProcessRecording"/>
+
+                    <MenuItem Header="_Save processed output..." Command="ApplicationCommands.Save"/>
+
+                    <MenuItem Header="_Close" Command="ApplicationCommands.Close"/>
+                </MenuItem>
+
+                <MenuItem Header="_Kinect">
+                    <MenuItem x:Name="ToggleSensorMenuItem" Header="_Connect" Command="k:KaptureCommands.ToggleSensor"/>
+                    <Separator/>
+                    <MenuItem Header="Sensor _Information..." Command="k:KaptureCommands.SensorInformation"/>
+                </MenuItem>
+            </Menu>
+
+            <StatusBar x:Name="StatusBar" DockPanel.Dock="Bottom">
+                <StatusBarItem>
+                    <TextBlock x:Name="SimpleStatusText" Text="Ready"/>
+                </StatusBarItem>
+                <StatusBarItem HorizontalAlignment="Right">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="100"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <ProgressBar Grid.Column="0" x:Name="ProcessingProgressBar" HorizontalAlignment="Stretch" Maximum="1" Height="20"/>
+                        <TextBlock Grid.Column="0" x:Name="ProcessingProgressBarText" Foreground="Gray" VerticalAlignment="Center" HorizontalAlignment="Center" Text="Idle"/> 
+                        <Button Padding="5,0" Margin="2,0,0,0" Grid.Column="1" Content="Cancel" Command="k:KaptureCommands.CancelProcessing"/>
+                    </Grid>
+                </StatusBarItem> 
+            </StatusBar> 
+
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" MinWidth="160" MaxWidth="320"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                
+                <ListBox Grid.Column="0" x:Name="RecordingList" SelectionChanged="RecordingList_SelectionChanged" ItemsSource="{Binding}" HorizontalContentAlignment="Stretch" MouseDown="RecordingList_MouseDown">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <Grid Height="20">
+                                <TextBlock VerticalAlignment="Center" Text="{Binding Path=Title}"/>
+                                <Grid.ContextMenu>
+                                    <ContextMenu>
+                                        <MenuItem Header="Process" Command="k:KaptureCommands.ProcessRecording"/>
+                                        <MenuItem Header="Save processed output..." Command="ApplicationCommands.Save"/>
+                                        <MenuItem Header="Close" Command="ApplicationCommands.Close"/>
+                                    </ContextMenu>
+                                    </Grid.ContextMenu>
+                            </Grid>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+                
+                <GridSplitter Grid.Column="1" HorizontalAlignment="Right" VerticalAlignment="Stretch" Width="5" ResizeBehavior="PreviousAndNext"/>
+
+                <Grid Grid.Column="2" DataContext="{Binding ElementName=RecordingList, Path=SelectedItem}">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    <Image x:Name="ColourImage" Source="{Binding Path=ColourImage}" Grid.Column="0" Grid.Row="0" Stretch="Uniform" MinWidth="120" MinHeight="90" />
+                    <Image x:Name="DepthImage" Source="{Binding Path=DepthImage}" Grid.Column="1" Grid.Row="0" Stretch="Uniform" MinWidth="120" MinHeight="90" />
+                    <Slider x:Name="FrameSlider" Value="{Binding Path=CurrentDisplayFrameNumber, Mode=TwoWay}" Maximum="{Binding Path=Recording.NumberOfFrames}" Grid.Row="1" Grid.ColumnSpan="2" IsEnabled="False" HorizontalAlignment="Stretch" SmallChange="1" LargeChange="5" Margin="0,11" IsSnapToTickEnabled="True"/>
+                </Grid>
+            </Grid>
+        </DockPanel>
+    </Grid>
+</Window>

@@ -1,0 +1,34 @@
+﻿<Window x:Class="Kapture.NewRecordingPrompt"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="NewRecordingPrompt" Height="125" Width="275" ResizeMode="NoResize" WindowStyle="None">
+    <Border x:Name="WindowBorder" Grid.Row="0" BorderThickness="1" BorderBrush="#ff007acc">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="40"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <Rectangle VerticalAlignment="Top" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Height="30" Fill="#FF007ACC"/>
+            <Label VerticalAlignment="Top" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Foreground="White" FontWeight="Bold" FontSize="16" Content="New Recording"/>
+
+            <StackPanel Grid.Row="1" Grid.Column="0">
+                <Label Height="30" VerticalAlignment="Center" Content="Duration (seconds)"/>
+            </StackPanel>
+
+            <StackPanel Grid.Row="1" Grid.Column="1" Margin="0,0,50,0">
+                <TextBox Height="30" VerticalAlignment="Center" Name="DurationBox" VerticalContentAlignment="Center">5</TextBox>
+            </StackPanel>
+
+            <StackPanel Grid.Row="2" Grid.Column="1"  Orientation="Horizontal" VerticalAlignment="Bottom" HorizontalAlignment="Right">
+                <Button Name="StartButton" IsDefault="True" Width="80" Margin="0,0,4,4" Padding="12,6,12,6" Click="StartButton_Click">Calibrate</Button>
+                <Button Name="CancelButton" IsCancel="True" Width="70" Margin="0,0,4,4" Padding="12,6,12,6">Cancel</Button>
+            </StackPanel>
+        </Grid>
+    </Border>
+</Window> 
